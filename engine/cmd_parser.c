@@ -44,5 +44,19 @@ void parseCmd(char *_szCmd)
     evt.user.timestamp = SDL_GetTicks();    // 잘 모르겠다
     SDL_PushEvent(&evt);            // 이벤트 푸쉬해서 메인으로 넘겨줘야함 (중요)
   }
+
+  else if(strcmp(szTokens[0], "load") == 0)
+  {
+      char *pFileName = szTokens[1];
+
+      static char pMsg[32];
+      strcpy(pMsg, "load");
+      strcpy(pMsg + 16, pFileName);
+      SDL_Event evt;
+      evt.type = SDL_USEREVENT;
+      evt.user.data1 = pMsg;
+      evt.user.timestamp = SDL_GetTicks();
+      SDL_PushEvent(&evt);
+  }
  
 }

@@ -23,6 +23,9 @@
     + 입력 텍스트 저장하는 버퍼 생성 (szBuf) DONE:
     + 저장된 입력버퍼를 parsing하는 함수 tile.c에 생성 DONE:
 
-10. load map realization WORKNOW:
+10. load map realization DONE:
+
+11. Create MapLayer WORKNOW:
 
 11. 팔레트 좌단, 상단에 보이지 않는 인덱스 존재 FIXME
+    + 원인 : 마우스 클릭 이벤트에서 팔레트 처리를 할 때 (현재 마우스의 위치 - 팔레트의 시작위치)/ 타일사이즈 로 나누었기 떄문에 -31~31/32 일 경우 x,y 인덱스의 값이 0이 된다. --> 나중에 PointInRect 함수로 처리하면 해결됌

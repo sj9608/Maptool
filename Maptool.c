@@ -195,6 +195,11 @@ int main(int argc, char *argv[])
                     saveMap(pFileName, g_worldMap_Layer_1);
                 }
                 // else if 선언하고 user.data1 넘겨 받은거 load 일 경우 함수 짜기
+                else if(strcmp(_event.user.data1, "load") == 0)
+                {
+                    char *pFileName = ((char *)_event.user.data1 +16);
+                    loadMap(pFileName, g_worldMap_Layer_1);
+                }
             }
             break;
             case SDL_QUIT:
