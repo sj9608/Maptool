@@ -7,6 +7,7 @@ Uint16 g_worldMap_Layer_1[256]; // 월드맵 크기
 Uint16 g_nSelectTileIndex = 0;  // 선택한 타일번호
 
 SDL_Rect g_rtWorldMap = {0, 0, 512, 512}; // 월드맵 영역 구분하는 사각형
+SDL_Rect g_rtPallete = {704, 0, 256, 620};   // 팔레트 영역 구분 사각형
 
 int main(int argc, char *argv[])
 {
@@ -34,15 +35,24 @@ int main(int argc, char *argv[])
         // 선택된 타일 이미지 팔레트 위에 출력 x 좌표 : 16 x 32 , y 좌표 : 1 * 32  , g_nSelectTileIndex를 rendercopy해서 나타내준다.
         PrintSelectedTile(g_pEngineCore->m_pRender, g_pTileSet, 25, 1, g_nSelectTileIndex);
 
-        // 704, 100 위치에 팔레트를 렌더링 한다.
-        {
+        
+        { // 팔레트 영역, 팔레트타일 렌더링
+            SDL_SetRenderDrawColor(g_pEngineCore->m_pRender, 0xff, 0xff, 0xff, 0xff);
+            SDL_RenderDrawRect(g_pEngineCore->m_pRender, &g_rtPallete);
+
+            // 704, 100 위치에 팔레트를 렌더링 한다.
             // 팔레트 렌더링 128 *2 의 넓이와 240 * 2의 높이로 렌더링
             SDL_Rect dstRect = {704, 100, 128 * 2, 240 * 2};
             SDL_RenderCopy(g_pEngineCore->m_pRender, g_pTileSet, NULL, &dstRect);
         }
 
-        // render world map
+       
+
+        // 월드맵 영역, 월드맵타일 렌더링
         {
+            SDL_SetRenderDrawColor(g_pEngineCore->m_pRender, 0xff, 0xff, 0xff, 0xff);
+            SDL_RenderDrawRect(g_pEngineCore->m_pRender, &g_rtWorldMap);
+            
             for (int i = 0; i < 256; i++)
             {
                 int _index = g_worldMap_Layer_1[i];

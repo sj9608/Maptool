@@ -8,6 +8,6 @@
 05. change printing position of selected tile, size 1.5 zoom DONE:
 06. WorldMap size change 8x8 to 16x16 DONE:
 07. create func putTile click and drag DONE:
-08. classificate worldmap section , pallte section WORKNOW:
-09. save map, load map realization
+08. classificate worldmap section , pallte section DONE:
+09. save map, load map realization WORKNOW:
 09. 팔레트 좌단, 상단에 보이지 않는 인덱스 존재 FIXME
