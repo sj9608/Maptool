@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
         SDL_RenderClear(g_pEngineCore->m_pRender);
 
         // 선택된 타일 이미지 팔레트 위에 출력 x 좌표 : 16 x 32 , y 좌표 : 1 * 32  , g_nSelectTileIndex를 rendercopy해서 나타내준다.
-        putTile(g_pEngineCore->m_pRender, g_pTileSet, 16, 1, g_nSelectTileIndex);
+        PrintSelectedTile(g_pEngineCore->m_pRender, g_pTileSet, 25, 1, g_nSelectTileIndex);
 
         // 704, 100 위치에 팔레트를 렌더링 한다.
         {
@@ -60,12 +60,13 @@ int main(int argc, char *argv[])
         {
             switch (_event.type)
             {
-            case SDL_MOUSEMOTION:
+            case SDL_MOUSEMOTION: // 마우스 모션
             {
                 printf("%4d%4d\r", _event.motion.x, _event.motion.y); // 마우스 좌표 표시
             }
             break;
-            case SDL_MOUSEBUTTONDOWN:
+
+            case SDL_MOUSEBUTTONDOWN:   //마우스 클릭
             {
                 printf("%8d\r", _event.button.button);
                 if (_event.button.button == 1) // left click
@@ -73,8 +74,8 @@ int main(int argc, char *argv[])
                     
                     // 팔레트 처리
                     {                                          
-                        int _x = (_event.motion.x - 704) / 16; // 팔레트의 x 인덱스  (704,100 의 위치에 팔레트가 존재) (타일의 사이즈인 16크기로 나눠줌)
-                        int _y = (_event.motion.y - 100) / 16; // 팔레트의 y 인덱스
+                        int _x = (_event.motion.x - 704) / 32; // 팔레트의 x 인덱스  (704,100 의 위치에 팔레트가 존재) (타일의 사이즈인 32크기로 나눠줌)
+                        int _y = (_event.motion.y - 100) / 32; // 팔레트의 y 인덱스
 
                         if ((_x >= 0 && _y >= 0) && (_x < 8 && _y < 15))
                         {
@@ -112,10 +113,12 @@ int main(int argc, char *argv[])
                 }
             }
             break;
+
             case SDL_KEYDOWN:
-                printf("%d \n", _event.key.keysym.scancode);
+
                 break;
             case SDL_QUIT:
+
                 bLoop = SDL_FALSE;
                 break;
             default:
