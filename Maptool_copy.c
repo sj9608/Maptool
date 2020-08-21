@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
 
         // 704, 100 위치에 팔레트를 렌더링 한다.
         {
-            // 팔레트 렌더링 48 * 4 의 넓이와 72 * 4의 높이로 렌더링
-            SDL_Rect dstRect = {704, 100, 128, 240 };
+            // 팔레트 렌더링 128 *2 의 넓이와 240 * 2의 높이로 렌더링
+            SDL_Rect dstRect = {704, 100, 128*2, 240*2 };
             SDL_RenderCopy(g_pEngineCore->m_pRender, g_pTileSet, NULL, &dstRect);
         }
 
