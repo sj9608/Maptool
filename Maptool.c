@@ -1,13 +1,15 @@
 #include "engine/core.h"
 #include "engine/tile.h"
+#include "engine/cmd_parser.h"
+
 tDE_S_Core *g_pEngineCore; // 엔진코어
 SDL_Texture *g_pTileSet;
 
 Uint16 g_worldMap_Layer_1[256]; // 월드맵 크기
 Uint16 g_nSelectTileIndex = 0;  // 선택한 타일번호
 
-SDL_Rect g_rtWorldMap = {0, 0, 512, 512}; // 월드맵 영역 구분하는 사각형
-SDL_Rect g_rtPallete = {704, 0, 256, 620};   // 팔레트 영역 구분 사각형
+SDL_Rect g_rtWorldMap = {0, 0, 512, 512};  // 월드맵 영역 구분하는 사각형
+SDL_Rect g_rtPallete = {704, 0, 256, 620}; // 팔레트 영역 구분 사각형
 
 int main(int argc, char *argv[])
 {
@@ -35,7 +37,6 @@ int main(int argc, char *argv[])
         // 선택된 타일 이미지 팔레트 위에 출력 x 좌표 : 16 x 32 , y 좌표 : 1 * 32  , g_nSelectTileIndex를 rendercopy해서 나타내준다.
         PrintSelectedTile(g_pEngineCore->m_pRender, g_pTileSet, 25, 1, g_nSelectTileIndex);
 
-        
         { // 팔레트 영역, 팔레트타일 렌더링
             SDL_SetRenderDrawColor(g_pEngineCore->m_pRender, 0xff, 0xff, 0xff, 0xff);
             SDL_RenderDrawRect(g_pEngineCore->m_pRender, &g_rtPallete);
@@ -46,13 +47,11 @@ int main(int argc, char *argv[])
             SDL_RenderCopy(g_pEngineCore->m_pRender, g_pTileSet, NULL, &dstRect);
         }
 
-       
-
         // 월드맵 영역, 월드맵타일 렌더링
         {
             SDL_SetRenderDrawColor(g_pEngineCore->m_pRender, 0xff, 0xff, 0xff, 0xff);
             SDL_RenderDrawRect(g_pEngineCore->m_pRender, &g_rtWorldMap);
-            
+
             for (int i = 0; i < 256; i++)
             {
                 int _index = g_worldMap_Layer_1[i];
@@ -70,6 +69,8 @@ int main(int argc, char *argv[])
         {
             switch (_event.type)
             {
+                static Uint16 nInputFSM = 0;
+                static char szInputBuf[32];
 
             case SDL_MOUSEMOTION: // 마우스 모션
             {
@@ -141,9 +142,61 @@ int main(int argc, char *argv[])
             }
             break;
 
-            case SDL_KEYDOWN:
+            case SDL_KEYDOWN: // 키보드 클릭
+            {
+                switch (nInputFSM)
+                {
+                case 0: // 대기상태
+                {
+                    if (_event.key.keysym.sym == SDLK_RETURN)
+                    {
+                        printf("input Command \n");
+                        nInputFSM = 1; // 입력상태로 전이
+                    }
+                    break;
+                }
 
+                case 1:
+                {
+                    if (_event.key.keysym.sym == SDLK_RETURN)
+                    {
+                        nInputFSM = 0; // 대기상태로 전이
+                        parseCmd(szInputBuf);
+                        szInputBuf[0] = 0x00;                        
+                    }
+                    
+                    else if(_event.key.keysym.sym == SDLK_BACKSPACE)
+                    {
+                        int _len = strlen(szInputBuf);
+                        szInputBuf[_len-1] = 0;
+                        printf("%s    \r",szInputBuf);
+                    }
+                }
                 break;
+                }
+            }
+            break;
+
+            case SDL_TEXTINPUT: // 텍스트 입력
+            {
+                if (nInputFSM == 1)
+                {
+                    strcat(szInputBuf, _event.text.text); // 현재 이벤트에 입력되는 텍스트 szInputBuf에 카피
+                    printf("%s    \r",szInputBuf); // 텍스트 입력이 있을 때 마다 입력된 값을 cmd  창에 띄워줌
+                }
+            }
+            break;
+
+            case SDL_USEREVENT: // 넘겨받은 유저이벤트
+            {
+                if (strcmp(_event.user.data1, "save") == 0)
+                {
+                    char *pFileName = ((char *)_event.user.data1 + 16);
+                    saveMap(pFileName, g_worldMap_Layer_1);
+                }
+                // else if 선언하고 user.data1 넘겨 받은거 load 일 경우 함수 짜기
+            }
+            break;
             case SDL_QUIT:
 
                 bLoop = SDL_FALSE;
