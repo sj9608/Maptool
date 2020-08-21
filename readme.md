@@ -6,5 +6,6 @@
 03. Change Maptool pallete position DONE:
 04. change pallete size twice DONE:
 05. change printing position of selected tile, size 1.5 zoom DONE:
-06. WorldMap size change 8x8 to 16x16 WORKNOW:
-04. classificate worldmap section , pallte section
+06. WorldMap size change 8x8 to 16x16 DONE:
+07. create func putTile click and drag WORKNOW:
+08. classificate worldmap section , pallte section
