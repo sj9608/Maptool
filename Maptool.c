@@ -4,7 +4,9 @@ tDE_S_Core *g_pEngineCore; // 엔진코어
 SDL_Texture *g_pTileSet;
 
 Uint16 g_worldMap_Layer_1[256]; // 월드맵 크기
-Uint16 g_nSelectTileIndex = 0; // 선택한 타일번호 
+Uint16 g_nSelectTileIndex = 0;  // 선택한 타일번호
+
+SDL_Rect g_rtWorldMap = {0, 0, 512, 512}; // 월드맵 영역 구분하는 사각형
 
 int main(int argc, char *argv[])
 {
@@ -14,12 +16,10 @@ int main(int argc, char *argv[])
     }
 
     g_pEngineCore = tDE_setup1("Maptool", 960, 720, 0); // window setup
-    
 
-    
     { // 이미지소스 surface에 긁어온거 rendering 하기
         SDL_Surface *pSurface;
-        pSurface = IMG_Load("res/basictiles.png"); // size 128 * 240  tiles 8 * 15  tile size 16 * 16 
+        pSurface = IMG_Load("res/basictiles.png"); // size 128 * 240  tiles 8 * 15  tile size 16 * 16
         SDL_Texture *pTexture = SDL_CreateTextureFromSurface(g_pEngineCore->m_pRender, pSurface);
         g_pTileSet = pTexture;
         SDL_FreeSurface(pSurface);
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
         // 704, 100 위치에 팔레트를 렌더링 한다.
         {
             // 팔레트 렌더링 128 *2 의 넓이와 240 * 2의 높이로 렌더링
-            SDL_Rect dstRect = {704, 100, 128*2, 240*2 };
+            SDL_Rect dstRect = {704, 100, 128 * 2, 240 * 2};
             SDL_RenderCopy(g_pEngineCore->m_pRender, g_pTileSet, NULL, &dstRect);
         }
 
@@ -60,24 +60,41 @@ int main(int argc, char *argv[])
         {
             switch (_event.type)
             {
+
             case SDL_MOUSEMOTION: // 마우스 모션
             {
-                printf("%4d%4d\r", _event.motion.x, _event.motion.y); // 마우스 좌표 표시
+                SDL_Point _pt = {_event.motion.x, _event.motion.y}; // 현재 마우스 좌표
+                printf("%4d%4d\r", _pt.x, _pt.y);                   // 마우스 좌표 표시
+
+                if (_event.button.button == 1) // 좌클릭한 상태로 모션
+                {
+
+                    if (SDL_PointInRect(&_pt, &g_rtWorldMap)) // 현재 마우스 포인터가 월드맵 영역 안에 있다.
+                    {
+                        int _x = (_event.motion.x) / 32; // 월드맵이 0,0 에서 시작함 x,y 에서 시작할경우 현재값(_event.motion.x,y) 에서 x,y값 뺴주면 됌. 타일사이즈 32에 한칸
+                        int _y = (_event.motion.y) / 32;
+
+                        int _tileIndex = _y * 16 + _x;
+
+                        g_worldMap_Layer_1[_tileIndex] = g_nSelectTileIndex;
+                        printf("%4d%4d%4d\r", _x, _y, _tileIndex);
+                    }
+                }
             }
             break;
 
-            case SDL_MOUSEBUTTONDOWN:   //마우스 클릭
+            case SDL_MOUSEBUTTONDOWN: //마우스 클릭
             {
                 printf("%8d\r", _event.button.button);
                 if (_event.button.button == 1) // left click
                 {
-                    
+
                     // 팔레트 처리
-                    {                                          
+                    {
                         int _x = (_event.motion.x - 704) / 32; // 팔레트의 x 인덱스  (704,100 의 위치에 팔레트가 존재) (타일의 사이즈인 32크기로 나눠줌)
                         int _y = (_event.motion.y - 100) / 32; // 팔레트의 y 인덱스
 
-                        if ((_x >= 0 && _y >= 0) && (_x < 8 && _y < 15)) // 
+                        if ((_x >= 0 && _y >= 0) && (_x < 8 && _y < 15)) //
                         {
                             g_nSelectTileIndex = _y * 8 + _x; //  팔레트의 2차원 배열 1차원으로 변환해서 현재 선택된 타일 인덱스값에 넣어줌.
                         }
@@ -89,10 +106,10 @@ int main(int argc, char *argv[])
                         int _x = (_event.motion.x) / 32; // 월드맵이 0,0 에서 시작함 x,y 에서 시작할경우 현재값(_event.motion.x,y) 에서 x,y값 뺴주면 됌. 타일사이즈 32에 한칸
                         int _y = (_event.motion.y) / 32;
 
-                        if (_x < 15 && _y < 15) // _x,_y 인덱스가 15 이내 일 경우만 월드맵으로 인식하고 _tileIndex에 2차원 배열 1차원으로 변환해서 넣어줌 
+                        if (_x < 15 && _y < 15) // _x,_y 인덱스가 15 이내 일 경우만 월드맵으로 인식하고 _tileIndex에 2차원 배열 1차원으로 변환해서 넣어줌
                         {
                             int _tileIndex = _y * 16 + _x;
-                            
+
                             g_worldMap_Layer_1[_tileIndex] = g_nSelectTileIndex;
                             printf("%4d%4d%4d\r", _x, _y, _tileIndex);
                         }
@@ -101,10 +118,10 @@ int main(int argc, char *argv[])
                 else if (_event.button.button == 3) // right click
                 {
                     {
-                        int _x =(_event.motion.x) / 32;
+                        int _x = (_event.motion.x) / 32;
                         int _y = (_event.motion.y) / 32;
 
-                        if(_x < 8 && _y<15)
+                        if (_x < 8 && _y < 15)
                         {
                             int _tileIndex = _y * 16 + _x;
                             g_worldMap_Layer_1[_tileIndex] = -1; // 지우개
@@ -126,7 +143,7 @@ int main(int argc, char *argv[])
             }
         }
     }
-    
+
     SDL_DestroyRenderer(g_pEngineCore->m_pRender);
     SDL_DestroyWindow(g_pEngineCore->m_pWin);
     SDL_Quit();
