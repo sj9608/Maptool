@@ -34,10 +34,10 @@ int main(int argc, char *argv[])
         // 선택된 타일 이미지 팔레트 위에 출력 x 좌표 : 16 x 32 , y 좌표 : 1 * 32  , g_nSelectTileIndex를 rendercopy해서 나타내준다.
         putTile(g_pEngineCore->m_pRender, g_pTileSet, 16, 1, g_nSelectTileIndex);
 
-        // 300, 100 위치에 팔레트를 렌더링 한다.
+        // 704, 100 위치에 팔레트를 렌더링 한다.
         {
             // 팔레트 렌더링 48 * 4 의 넓이와 72 * 4의 높이로 렌더링
-            SDL_Rect dstRect = {300, 100, 128, 240 };
+            SDL_Rect dstRect = {704, 100, 128, 240 };
             SDL_RenderCopy(g_pEngineCore->m_pRender, g_pTileSet, NULL, &dstRect);
         }
 
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
                     
                     // 팔레트 처리
                     {                                          
-                        int _x = (_event.motion.x - 300) / 16; // 팔레트의 x 인덱스  (300,100 의 위치에 팔레트가 존재) (타일의 사이즈인 16크기로 나눠줌)
+                        int _x = (_event.motion.x - 704) / 16; // 팔레트의 x 인덱스  (704,100 의 위치에 팔레트가 존재) (타일의 사이즈인 16크기로 나눠줌)
                         int _y = (_event.motion.y - 100) / 16; // 팔레트의 y 인덱스
 
                         if ((_x >= 0 && _y >= 0) && (_x < 8 && _y < 15))

@@ -2,6 +2,7 @@
 
 ## TODO:
 01. Windowsize Change ( 960 * 720 ) DONE:
-03. create core engine (window create, renderer) DONE:
-02. Change Maptool pallete position
-03. classificate worldmap section , pallte section
+02. create core engine (window create, renderer) DONE:
+03. Change Maptool pallete position DONE:
+04. change pallete size twice WORKNOW:
+04. classificate worldmap section , pallte section
