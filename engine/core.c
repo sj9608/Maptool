@@ -57,3 +57,28 @@ tDE_S_Core *tDE_setup1(const char *szTitle, int window_width, int window_height,
     return pCore;
 
 }
+
+void tDE_closeCore(tDE_S_Core *pCore)
+{
+    TTF_CloseFont(pCore->m_pFont);
+    SDL_DestroyRenderer(pCore->m_pRender);
+    SDL_DestroyWindow(pCore->m_pWin);
+}
+
+SDL_Texture *tDE_loadTexture(tDE_S_Core *pCore, const char *filename)
+{
+    SDL_Surface *surface;
+    surface = IMG_Load(filename);
+
+    if(surface == NULL)
+    {
+        printf("file load error : %s\n", SDL_GetError());
+        return NULL;
+    }
+    printf("IMG load Success\n");
+
+    SDL_Texture *pTex = SDL_CreateTextureFromSurface(pCore->m_pRender, surface);
+    SDL_FreeSurface(surface);
+    
+    return pTex;
+}

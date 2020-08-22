@@ -21,6 +21,8 @@ typedef struct __core
 } tDE_S_Core ; // 엔진 구동을 위한 코어 구조체
 
 tDE_S_Core *tDE_setup1(const char *szTitle, int window_width, int window_height, Uint32 flags);
+void tDE_closeCore(tDE_S_Core *pCore);
+SDL_Texture *tDE_loadTexture(tDE_S_Core *pCore, const char *filename);
 
 
 #endif

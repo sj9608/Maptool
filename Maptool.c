@@ -3,7 +3,7 @@
 #include "engine/cmd_parser.h"
 
 tDE_S_Core *g_pEngineCore; // 엔진코어
-SDL_Texture *g_pTileSet;
+SDL_Texture *g_pTileSet; // 텍스쳐
 
 Uint16 g_worldMap_Layer_1[256]; // 월드맵 크기
 Uint16 g_nSelectTileIndex = 0;  // 선택한 타일번호
@@ -19,14 +19,7 @@ int main(int argc, char *argv[])
     }
 
     g_pEngineCore = tDE_setup1("Maptool", 960, 720, 0); // window setup
-
-    { // 이미지소스 surface에 긁어온거 rendering 하기
-        SDL_Surface *pSurface;
-        pSurface = IMG_Load("res/basictiles.png"); // size 128 * 240  tiles 8 * 15  tile size 16 * 16
-        SDL_Texture *pTexture = SDL_CreateTextureFromSurface(g_pEngineCore->m_pRender, pSurface);
-        g_pTileSet = pTexture;
-        SDL_FreeSurface(pSurface);
-    }
+    g_pTileSet = tDE_loadTexture(g_pEngineCore,"res/basictiles.png"); // texutre setup
 
     SDL_bool bLoop = SDL_TRUE;
     while (bLoop)
@@ -212,8 +205,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    SDL_DestroyRenderer(g_pEngineCore->m_pRender);
-    SDL_DestroyWindow(g_pEngineCore->m_pWin);
+    SDL_DestroyTexture(g_pTileSet); // 다 사용한 texture destroy
+    tDE_closeCore(g_pEngineCore); // renderer, window 순서대로 destroy
     SDL_Quit();
     return 0;
 }
